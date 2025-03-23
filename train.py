@@ -13,6 +13,11 @@ wandb.init(project="RTDETR_mew_exp")
 model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-x.yaml')
 model.model.to(device)
 
+# Iterate through layers
+print("Model Layers and Parameters:\n")
+for name, module in model.named_children():
+    print(f"Layer Name: {name}, Layer Type: {module}")
+    
 # Define a callback to log losses at the end of each training batch
 def log_losses(trainer):
     # Access the loss dictionary
