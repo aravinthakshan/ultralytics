@@ -826,7 +826,7 @@ class BaseTrainer:
         elif name == "SGD":
             optimizer = optim.SGD(g[2], lr=lr, momentum=momentum, nesterov=True)
         elif name == "SOAP":
-            optimizer =  SOAP(g[2],lr=lr,betas=(momentum, 0.95),weight_decay=0.0)
+            optimizer =  SOAP(g[2],lr=lr,betas=(momentum, 0.95),weight_decay=0.0) # try this with 0.1 weight decay later 
 
         else:
             raise NotImplementedError(
