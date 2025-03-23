@@ -6,7 +6,7 @@ import wandb
 import os
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-wandb.login(key = "9097b6348907fd8bad133bde5c71d9e0c08fde4")
+wandb.login(key = "9097b6348907fd8bad133bde5c71d9e0c08fde45")
 wandb.init(project="RTDETR_mew_exp")
 #  default = '9097b6348907fd8bad133bde5c71d9e0c08fde45')
 # Load the custom model configuration
