@@ -15,7 +15,7 @@ import warnings
 from copy import copy, deepcopy
 from datetime import datetime, timedelta
 from pathlib import Path
-
+from soap_optimizier import SOAP
 import numpy as np
 import torch
 from torch import distributed as dist
@@ -825,6 +825,9 @@ class BaseTrainer:
             optimizer = optim.RMSprop(g[2], lr=lr, momentum=momentum)
         elif name == "SGD":
             optimizer = optim.SGD(g[2], lr=lr, momentum=momentum, nesterov=True)
+        elif name == "SOAP":
+            optimizer =  SOAP(g[2],lr=lr,betas=(momentum, 0.95),weight_decay=0.0)
+
         else:
             raise NotImplementedError(
                 f"Optimizer '{name}' not found in list of available optimizers {optimizers}. "
