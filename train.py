@@ -1,19 +1,27 @@
-from ultralytics.models.rtdetr import RTDETR
-# from ultralytics import YOLO
-from ultralytics.engine.model import Model
+# from ultralytics.models.rtdetr import RTDETR
+from ultralytics import RTDETR
+from ultralytics.nn.modules.transformer import convert_ln_to_dyt
 import torch
 import wandb
 import os
 
+### CONFIGS
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 wandb.login(key = "9097b6348907fd8bad133bde5c71d9e0c08fde45")
 wandb.init(project="RTDETR_mew_exp")
 
-# Load the custom model configuration
 # model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-x.yaml')
 model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-resnet50.yaml')
 model.model.to(device)
 
+
+# Load a COCO-pretrained RT-DETR-X model
+model = RTDETR("rtdetr-X.pt")
+
+# Display model information (optional)
+model.info()
+
+model = convert_ln_to_dyt(model)
 # Iterate through layers
 # print("Model Layers and Parameters:\n")
 # for name, module in model.named_children():
@@ -39,7 +47,7 @@ model.add_callback('on_train_batch_end', log_losses)
 
 # Train the model with the specified configuration and sync to W&B
 Result_Final_model = model.train(
-    epochs=10,
+    epochs=100,
     data="coco128.yaml",
     optimizer='SOAP',
     project='rtdetr_new_exp',
