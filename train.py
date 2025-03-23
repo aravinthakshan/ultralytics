@@ -10,7 +10,8 @@ wandb.login(key = "9097b6348907fd8bad133bde5c71d9e0c08fde45")
 wandb.init(project="RTDETR_mew_exp")
 
 # Load the custom model configuration
-model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-x.yaml')
+# model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-x.yaml')
+model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-resnet50.yaml')
 model.model.to(device)
 
 # Iterate through layers
