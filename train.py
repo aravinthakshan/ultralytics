@@ -8,15 +8,15 @@ import os
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 wandb.login(key = "9097b6348907fd8bad133bde5c71d9e0c08fde45")
 wandb.init(project="RTDETR_mew_exp")
-#  default = '9097b6348907fd8bad133bde5c71d9e0c08fde45')
+
 # Load the custom model configuration
 model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-x.yaml')
 model.model.to(device)
 
 # Iterate through layers
-print("Model Layers and Parameters:\n")
-for name, module in model.named_children():
-    pass
+# print("Model Layers and Parameters:\n")
+# for name, module in model.named_children():
+#     pass
     # print(f"Layer Name: {name}, Layer Type: {module}")
 
 # Define a callback to log losses at the end of each training batch
