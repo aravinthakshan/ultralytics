@@ -15,7 +15,7 @@ import warnings
 from copy import copy, deepcopy
 from datetime import datetime, timedelta
 from pathlib import Path
-from soap_optimizier import SOAP
+from ultralytics.engine.soap_optimizier import SOAP
 import numpy as np
 import torch
 from torch import distributed as dist

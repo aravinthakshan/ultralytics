@@ -1,5 +1,5 @@
 from ultralytics.models.rtdetr import RTDETR
-from ultralytics import YOLO
+# from ultralytics import YOLO
 from ultralytics.engine.model import Model
 import torch
 import wandb
@@ -9,7 +9,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 wandb.init(project="RTDETR_mew_exp")
 # Load the custom model configuration
-model = RTDETR('yolov8n-GOLDED copy.yaml')
+model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-x.yaml')
 model.model.to(device)
 
 # Define a callback to log losses at the end of each training batch
