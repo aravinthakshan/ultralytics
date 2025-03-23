@@ -47,7 +47,7 @@ model.add_callback('on_train_batch_end', log_losses)
 
 # Train the model with the specified configuration and sync to W&B
 metrics = model.train(
-    epochs=100,
+    epochs=1,
     data="coco128.yaml",
     optimizer='SOAP',
     project='rtdetr_new_exp',
