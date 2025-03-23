@@ -9,7 +9,7 @@ import torch.nn as nn
 from torch.nn.init import constant_, xavier_uniform_
 
 from ultralytics.utils.tal import TORCH_1_10, dist2bbox, dist2rbox, make_anchors
-
+from .transformer import DynamicTanh, convert_ln_to_dyt
 from .block import DFL, BNContrastiveHead, ContrastiveHead, Proto
 from .conv import Conv, DWConv
 from .transformer import MLP, DeformableTransformerDecoder, DeformableTransformerDecoderLayer
@@ -438,7 +438,7 @@ class RTDETRDecoder(nn.Module):
         self.query_pos_head = MLP(4, 2 * hd, hd, num_layers=2)
 
         # Encoder head
-        self.enc_output = nn.Sequential(nn.Linear(hd, hd), nn.LayerNorm(hd))
+        self.enc_output = convert_ln_to_dyt(nn.Sequential(nn.Linear(hd, hd), nn.LayerNorm(hd))) # HERE THERES A LAYER NORM
         self.enc_score_head = nn.Linear(hd, nc)
         self.enc_bbox_head = MLP(hd, hd, 4, num_layers=3)
 
