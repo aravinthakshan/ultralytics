@@ -6,8 +6,9 @@ import wandb
 import os
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
+wandb.login(key = "9097b6348907fd8bad133bde5c71d9e0c08fde4")
 wandb.init(project="RTDETR_mew_exp")
+#  default = '9097b6348907fd8bad133bde5c71d9e0c08fde45')
 # Load the custom model configuration
 model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-x.yaml')
 model.model.to(device)
