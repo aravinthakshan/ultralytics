@@ -16,8 +16,9 @@ model.model.to(device)
 # Iterate through layers
 print("Model Layers and Parameters:\n")
 for name, module in model.named_children():
-    print(f"Layer Name: {name}, Layer Type: {module}")
-    
+    pass
+    # print(f"Layer Name: {name}, Layer Type: {module}")
+
 # Define a callback to log losses at the end of each training batch
 def log_losses(trainer):
     # Access the loss dictionary
@@ -37,7 +38,7 @@ model.add_callback('on_train_batch_end', log_losses)
 
 # Train the model with the specified configuration and sync to W&B
 Result_Final_model = model.train(
-    epochs=70,
+    epochs=5,
     optimizer='SOAP',
     project='rtdetr_new_exp',
     save=True,
