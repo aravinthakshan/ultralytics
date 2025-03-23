@@ -24,6 +24,42 @@ __all__ = (
     "MLP",
 )
 
+import torch
+import torch.nn as nn
+from timm.layers import LayerNorm2d
+
+
+class DynamicTanh(nn.Module):
+    def __init__(self, normalized_shape, channels_last, alpha_init_value=0.5):
+        super().__init__()
+        self.normalized_shape = normalized_shape
+        self.alpha_init_value = alpha_init_value
+        self.channels_last = channels_last
+
+        self.alpha = nn.Parameter(torch.ones(1) * alpha_init_value)
+        self.weight = nn.Parameter(torch.ones(normalized_shape))
+        self.bias = nn.Parameter(torch.zeros(normalized_shape))
+
+    def forward(self, x):
+        x = torch.tanh(self.alpha * x)
+        if self.channels_last:
+            x = x * self.weight + self.bias
+        else:
+            x = x * self.weight[:, None, None] + self.bias[:, None, None]
+        return x
+
+    def extra_repr(self):
+        return f"normalized_shape={self.normalized_shape}, alpha_init_value={self.alpha_init_value}, channels_last={self.channels_last}"
+
+
+def convert_ln_to_dyt(module):
+    module_output = module
+    if isinstance(module, nn.LayerNorm):
+        module_output = DynamicTanh(module.normalized_shape, not isinstance(module, LayerNorm2d))
+    for name, child in module.named_children():
+        module_output.add_module(name, convert_ln_to_dyt(child))
+    del module
+    return module_output
 
 class TransformerEncoderLayer(nn.Module):
     """
@@ -66,8 +102,10 @@ class TransformerEncoderLayer(nn.Module):
         self.fc1 = nn.Linear(c1, cm)
         self.fc2 = nn.Linear(cm, c1)
 
-        self.norm1 = nn.LayerNorm(c1)
-        self.norm2 = nn.LayerNorm(c1)
+        # self.norm1 = nn.LayerNorm(c1) 
+        # self.norm2 = nn.LayerNorm(c1)
+        self.norm1 = DynamicTanh(c1)
+        self.norm2 = DynamicTanh(c1)
         self.dropout = nn.Dropout(dropout)
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
@@ -557,12 +595,14 @@ class DeformableTransformerDecoderLayer(nn.Module):
         # Self attention
         self.self_attn = nn.MultiheadAttention(d_model, n_heads, dropout=dropout)
         self.dropout1 = nn.Dropout(dropout)
-        self.norm1 = nn.LayerNorm(d_model)
+        # self.norm1 = nn.LayerNorm(d_model)
+        self.norm1 = DynamicTanh(d_model)
 
         # Cross attention
         self.cross_attn = MSDeformAttn(d_model, n_levels, n_heads, n_points)
         self.dropout2 = nn.Dropout(dropout)
-        self.norm2 = nn.LayerNorm(d_model)
+        # self.norm2 = nn.LayerNorm(d_model)
+        self.norm2 = DynamicTanh(d_model)
 
         # FFN
         self.linear1 = nn.Linear(d_model, d_ffn)
@@ -570,7 +610,8 @@ class DeformableTransformerDecoderLayer(nn.Module):
         self.dropout3 = nn.Dropout(dropout)
         self.linear2 = nn.Linear(d_ffn, d_model)
         self.dropout4 = nn.Dropout(dropout)
-        self.norm3 = nn.LayerNorm(d_model)
+        # self.norm3 = nn.LayerNorm(d_model)
+        self.norm3 = DynamicTanh(d_model)
 
     @staticmethod
     def with_pos_embed(tensor, pos):
