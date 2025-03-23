@@ -46,7 +46,7 @@ def log_losses(trainer):
 model.add_callback('on_train_batch_end', log_losses)
 
 # Train the model with the specified configuration and sync to W&B
-Result_Final_model = model.train(
+metrics = model.train(
     epochs=100,
     data="coco128.yaml",
     optimizer='SOAP',
@@ -54,5 +54,19 @@ Result_Final_model = model.train(
     save=True,
     imgsz = 640
 )
+
+metrics = model.val()
+
+print(metrics.box.map)  # map50-95
+
+
+print(metrics.box.map50)  # map50
+
+
+print(metrics.box.map75) # map75
+
+
+print(metrics.box.maps)  # a list contains map50-95 of each category
+
 # Finish the W&B run
 wandb.finish()
