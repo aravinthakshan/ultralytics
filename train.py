@@ -16,7 +16,7 @@ model.model.to(device)
 
 
 # Load a COCO-pretrained RT-DETR-X model
-model = RTDETR("rtdetr-X.pt")
+model = RTDETR("rtdetr-x.pt")
 
 # Display model information (optional)
 model.info()
