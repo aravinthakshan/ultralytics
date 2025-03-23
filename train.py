@@ -15,8 +15,8 @@ model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-resnet50.yaml')
 model.model.to(device)
 
 
-# Load a COCO-pretrained RT-DETR-X model
-model = RTDETR("rtdetr-x.pt")
+# Load a COCO-pretrained RT-DETR-l model
+model = RTDETR("rtdetr-l.pt")
 
 # Display model information (optional)
 model.info()
